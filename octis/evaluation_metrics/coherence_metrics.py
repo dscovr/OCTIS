@@ -89,10 +89,11 @@ class WECoherencePairwise(AbstractMetric):
         self.binary = binary
         self.topk = topk
         self.word2vec_path = word2vec_path
-        if word2vec_path is None:
+
+        if word2vec_path is None and kv is not None:
             self._wv = api.load('word2vec-google-news-300')
 
-        elif kv:
+        elif kv is not None:
             self._wv = kv
 
         else:
@@ -165,10 +166,11 @@ class WECoherenceCentroid(AbstractMetric):
         self.binary = binary
         self.topk = topk
         self.word2vec_path = word2vec_path
-        if word2vec_path is None:
+
+        if word2vec_path is None and kv is not None:
             self._wv = api.load('word2vec-google-news-300')
 
-        elif kv:
+        elif kv is not None:
             self._wv = kv
 
         else:
