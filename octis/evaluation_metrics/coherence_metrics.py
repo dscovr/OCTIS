@@ -72,7 +72,7 @@ class Coherence(AbstractMetric):
 
 
 class WECoherencePairwise(AbstractMetric):
-    def __init__(self, word2vec_path=None, binary=False, topk=10):
+    def __init__(self, word2vec_path=None, kv: KeyedVectors=None, binary=False, topk=10):
         """
         Initialize metric
 
@@ -91,6 +91,10 @@ class WECoherencePairwise(AbstractMetric):
         self.word2vec_path = word2vec_path
         if word2vec_path is None:
             self._wv = api.load('word2vec-google-news-300')
+
+        elif kv:
+            self._wv = kv
+
         else:
             self._wv = KeyedVectors.load_word2vec_format(
                 word2vec_path, binary=self.binary)
@@ -144,25 +148,32 @@ class WECoherencePairwise(AbstractMetric):
 
 
 class WECoherenceCentroid(AbstractMetric):
-    def __init__(self, topk=10, word2vec_path=None, binary=True):
+    def __init__(self, word2vec_path=None, kv: KeyedVectors=None, binary=False, topk=10):
         """
         Initialize metric
 
         Parameters
         ----------
+        dictionary with keys
         topk : how many most likely words to consider
-        w2v_model_path : a word2vector model path, if not provided, google news 300 will be used instead
+        word2vec_path : if word2vec_file is specified retrieves word embeddings file (in word2vec format)
+        to compute similarities, otherwise 'word2vec-google-news-300' is downloaded
+        binary : True if the word2vec file is binary, False otherwise (default False)
         """
         super().__init__()
 
-        self.topk = topk
         self.binary = binary
+        self.topk = topk
         self.word2vec_path = word2vec_path
-        if self.word2vec_path is None:
+        if word2vec_path is None:
             self._wv = api.load('word2vec-google-news-300')
+
+        elif kv:
+            self._wv = kv
+
         else:
             self._wv = KeyedVectors.load_word2vec_format(
-                self.word2vec_path, binary=self.binary)
+                word2vec_path, binary=self.binary)
 
     @staticmethod
     def info():
